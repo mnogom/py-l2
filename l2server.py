@@ -14,10 +14,11 @@ def parse_args():
     parser = ArgumentParser(
         description="Server for raw ethernet frame with custom type")
     parser.add_argument("-i", "--interface")
+    parser.add_argument("-x", action="count", default=0)
     return parser.parse_args()
 
 
-def get_handle(iface: str):
+def get_handle(iface: str, verbose: int):
     message = "I gotchu bro (-:"
     handled = deque(maxlen=50)
 
@@ -38,7 +39,14 @@ def get_handle(iface: str):
         reply = Ether(dst=pkt[Ether].src, src=pkt[Ether].dst, type=VLAN_ETHERTYPE if has_vlan else L2HI_ETHERTYPE)
         if has_vlan:
             reply /= Dot1Q(vlan=pkt[Dot1Q].vlan, type=L2HI_ETHERTYPE)
-        sendp(reply / payload.bytes, iface=iface)
+        response = reply / payload.bytes
+
+        if verbose:
+            request_bytes = bytes(request)
+            response_bytes = bytes(response)
+            print(f"--> Recieve package:  {request_bytes.hex()} ({len(request_bytes)})")
+            print(f"--> Response package: {response_bytes.hex()} ({len(response_bytes)})")
+        sendp(response, iface=iface)
     return handle
 
 

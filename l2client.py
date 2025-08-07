@@ -18,6 +18,7 @@ def parse_args():
     parser.add_argument("-d", "--dst-mac")
     parser.add_argument("-v", "--vlan_id", default=None)
     parser.add_argument("-i", "--interface")
+    parser.add_argument("-x", action="count", default=0)
     return parser.parse_args()
 
 
@@ -37,8 +38,10 @@ def main():
 
     while True:
         payload = Payload(msg=message)
-        print(payload.uuid)
-        sendp(pkt / payload.bytes, iface=args.interface, verbose=True)
+        request = pkt / payload.bytes
+        if args.x:
+            print(f"--> {bytes(request).hex()}")
+        sendp(request, iface=args.interface, verbose=True)
         sleep(3)
 
 

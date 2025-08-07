@@ -69,7 +69,7 @@ def main():
     args = parse_args()
     server_mac = get_if_hwaddr(args.interface)
 
-    handle = get_handle(iface=args.interface)
+    handle = get_handle(iface=args.interface, verbose=args.x)
     lfilter = get_lfilter(server_mac=server_mac)
 
     print(f"Listen on '{args.interface}' with mac '{server_mac}'")

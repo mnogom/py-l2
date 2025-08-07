@@ -34,7 +34,8 @@ def main():
     if args.vlan_id:
         pkt /= Dot1Q(vlan=int(args.vlan_id), type=L2HI_ETHERTYPE)
 
-    tcpdump = f"tcpdump -vv -n -i any ether proto {L2HI_ETHERTYPE} -XX"
+    tcpdump = f"tcpdump -vv -n -i any ether proto {L2HI_ETHERTYPE} or {VLAN_ETHERTYPE} -XX"
+    print(f"Listen packages: {tcpdump}")
 
     while True:
         payload = Payload(msg=message)

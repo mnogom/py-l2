@@ -42,7 +42,7 @@ def get_handle(iface: str, verbose: int):
         response = reply / payload.bytes
 
         if verbose:
-            request_bytes = bytes(request)
+            request_bytes = bytes(pkt)
             response_bytes = bytes(response)
             print(f"--> Recieve package:  {request_bytes.hex()} ({len(request_bytes)})")
             print(f"--> Response package: {response_bytes.hex()} ({len(response_bytes)})")

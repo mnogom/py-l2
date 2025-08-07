@@ -40,7 +40,7 @@ def main():
         payload = Payload(msg=message)
         request = pkt / payload.bytes
         if args.x:
-            print(f"--> {bytes(request).hex()}")
+            print(f"--> {bytes(request).hex()}, ({len(bytes(request))})")
         sendp(request, iface=args.interface, verbose=True)
         sleep(3)
 

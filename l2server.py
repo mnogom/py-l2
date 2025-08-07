@@ -28,24 +28,30 @@ def get_handle(iface: str, verbose: int):
         else:
             request = pkt.payload
 
-        payload = Payload.from_bytes(bytes(request))
+        request_payload = Payload.from_bytes(bytes(request))
 
-        if payload.uuid in handled:
+        if request_payload.uuid in handled:
             return
-        handled.append(payload.uuid)
-        payload.msg = message
-
+        handled.append(request_payload.uuid)
+        
+        response_payload = Payload(
+            uuid=request_payload.uuid,
+            msg=message
+        )
+        
         has_vlan = Dot1Q in pkt
         reply = Ether(dst=pkt[Ether].src, src=pkt[Ether].dst, type=VLAN_ETHERTYPE if has_vlan else L2HI_ETHERTYPE)
         if has_vlan:
             reply /= Dot1Q(vlan=pkt[Dot1Q].vlan, type=L2HI_ETHERTYPE)
-        response = reply / payload.bytes
+        response = reply / response_payload.bytes
 
         if verbose:
             request_bytes = bytes(pkt)
             response_bytes = bytes(response)
             print(f"--> Recieve package:  {request_bytes.hex()} ({len(request_bytes)})")
+            print(f"----> req payload: {request_payload}")
             print(f"--> Response package: {response_bytes.hex()} ({len(response_bytes)})")
+            print(f"----> res_payload: {response_payload}")
         sendp(response, iface=iface)
     return handle
 

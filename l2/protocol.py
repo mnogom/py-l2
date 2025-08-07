@@ -9,7 +9,7 @@ class Payload:
         msg: str = "",
     ):
         self.msg = msg
-        self.uuid = uuid4()
+        self.uuid = uuid or uuid4()
 
     def __repr__(self):
         return f"{self.uuid} @ {self.msg}"
